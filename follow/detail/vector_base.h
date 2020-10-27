@@ -317,7 +317,7 @@ namespace thrust {
 			storage_type m_storage;
 
 			size_type m_size;
-
+			//
 		private:
 
 
