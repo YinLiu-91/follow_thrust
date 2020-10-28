@@ -16,6 +16,9 @@
   <ItemGroup>
     <ClInclude Include="detail\vector_base.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="detail\vector_base.inl" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{C1B3CA17-1EC1-41F9-9ED3-8F81E9CF4565}</ProjectGuid>
     <RootNamespace>thrust_follow</RootNamespace>
@@ -47,6 +50,10 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>F:\personal\course\c-plus\parallel_computing\gpu_compu\git_cuda_1024\thrust_follow\follow;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IncludePath>F:\personal\course\c-plus\parallel_computing\gpu_compu\git_cuda_1024\thrust_follow\follow;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
