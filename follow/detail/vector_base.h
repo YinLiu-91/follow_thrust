@@ -320,27 +320,96 @@ namespace thrust {
 			//
 		private:
 
+			template<typename IteratorIntegralType>
+			void init_dispatch(IteratorIntegralType begin, IteratorIntegralType end, false_type);
 
+			template<typename IteratorIntegralType>
+			void init_dispatch(IteratorIntegralType begin, IteratorIntegralType value, true_type);
 
+			template<typename InputInterator>
+			void range_init(InputIterator first, InputIterator last);
 
+			template<typename InputInterator>
+			void range_init(InputIterator first, InputIterator last,thrust::incrementable_traversal_tag);
 
+			template<typename ForwardIterator>
+			void range_init(ForwardIterator first, ForwardIterator last, thrust::random_access_traversal_tag);
 
+			void default_init(size_type n);
 
+			void fill_init(size_type n, const T& x);
 
+			template<typename InputIteratorOrIntegralType>
+			void insert_dispatch(iterator position, InputIteratorOrIntegralType first, InputIteratorOrIntegralType last, false_type);
 
+			template<typename InputIteratorOrIntegralType>
+			void insert_dispatch(iterator position, InputIteratorOrIntegralType first, InputIteratorOrIntegralType x, true_type);
 
+			void append(size_type n);
 
+			void fill_insert(iterator position, size_type n, const T& x);
 
+			template<typename InputIterator>
+			void copy_insert(iterator position, InputIterator first, InputIterator last);
 
+			template<typename InputIterator>
+			void assign_dispatch(InputIterator first, InputIterator last, false_type);
 
+			template<typename Integral>
+			void assign_dispatch(Integral n, Integral x, true_type);
 
+			template<typename InputIterator>
+			void range_assign(InputIterator first, InputIterator last);
 
+			template<typename RandomAccessIterator>
+			void range_assign(RandomAccessIterator first, RandomAccessIterator last, thrust::random_access_traversal_tag);
 
+			template<typename InputIterator>
+			void range_assign(InputIterator first, InputIterator last, thrust::incrementable_traversal_tag);
 
+			void fill_assign(size_type n, const T& x);
+
+			template<typename ForwardIterator>
+			void allcate_and_copy(size_type requested_size, ForwardIterator first, ForwardIterator last, storage_type& new_storage);
 		};
-
-
-
-
 	}//detail
+
+
+	typename<typename T, typename Alloc>
+		void swap(detail::vector_base<T, Alloc>& a,
+			detail::vector_base<T, Alloc>& b);
+
+	template<typename T1,typename Alloc1,typename T2,typename Alloc2>
+	void operator==(const detail::vector_base<T1, Alloc1>& lhs,
+		const detail::vector_base<T2, Alloc2>& rhs);
+
+
+	template<typename T1, typename Alloc1, typename T2, typename Alloc2>
+	void operator==(const detail::vector_base<T1, Alloc1>& lhs,
+		const std::vector<T2, Alloc2>& rhs);
+
+	template<typename T1, typename Alloc1, typename T2, typename Alloc2>
+	void operator==(const std::vector<T1, Alloc1>& lhs,
+		const detail::vector_base<T2, Alloc2>& rhs);
+
+
+	template<typename T1, typename Alloc1, typename T2, typename Alloc2>
+	void operator!=(const detail::vector_base<T1, Alloc1>& lhs,
+		const detail::vector_base<T2, Alloc2>& rhs);
+
+
+	template<typename T1, typename Alloc1, typename T2, typename Alloc2>
+	void operator!=(const detail::vector_base<T1, Alloc1>& lhs,
+		const std::vector<T2, Alloc2>& rhs);
+
+	template<typename T1, typename Alloc1, typename T2, typename Alloc2>
+	void operator!=(const std::vector<T1, Alloc1>& lhs,
+		const detail::vector_base<T2, Alloc2>& rhs);
+
+
+
+
+
+
+
 }//thrust
