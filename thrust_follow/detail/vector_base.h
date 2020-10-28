@@ -413,3 +413,6 @@ namespace thrust {
 
 
 }//thrust
+
+
+#include <thrust_follow/detail/vector_base.inl>
