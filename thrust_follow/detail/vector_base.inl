@@ -338,7 +338,15 @@ namespace detail{
 		}//·µ»Øconst crbegin()
 
 
-
+		template<typename T,typename Alloc>
+		typename vector_base<T,Alloc>::iterator
+			vector_base<T,Alloc>
+			::end(void)
+		{
+			iterator result = begin();
+			thrust::advance ( result, size());//
+			return result;
+		}
 
 
 
