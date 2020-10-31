@@ -343,10 +343,11 @@ namespace detail{
 			vector_base<T,Alloc>
 			::end(void)
 		{
+			
 			iterator result = begin();
 			thrust::advance ( result, size());//
 			return result;
-		}
+		}//为什么没有end?
 
 
 
