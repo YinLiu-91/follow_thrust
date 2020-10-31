@@ -34,6 +34,7 @@ namespace thrust {
 			/*! 创建了一个空的vector_base
 			*/
 
+
 			vector_base(void);
 
 			/*!此创建一个空的vector_base
@@ -110,6 +111,9 @@ namespace thrust {
 			vector_base(const vector_base<OtherT, OtherAlloc>& v);
 
 
+			template<typename OtherT, typename OtherAlloc>
+			vector_base& operator=(const vector_base<OtherT, OtherAlloc>& v);
+
 			/*!拷贝赋值一个不同类型的vector_base
 			* \param v 将要被拷贝的vector_base
 			*/
@@ -121,14 +125,19 @@ namespace thrust {
 			*/
 
 			template<typename OtherT, typename OtherAlloc>
-			vector_base(const vector_base<OtherT, OtherAlloc>& v);
+			vector_base(const std::vector<OtherT, OtherAlloc>& v);
 
 
 			/*!拷贝赋值一个不同类型的std::vector
 			* \param v 将要被拷贝的vector
 			*/
-			template<typename OtherT, typename OtherAlloc>
-			vector_base& operator=(const std::vector<OtherT, OtherAlloc>& v);
+			/*template<typename OtherT, typename OtherAlloc>
+			vector_base& operator=(const std::vector<OtherT, OtherAlloc>& v);*/
+
+
+
+			template<typename InputIterator>
+			void range_init(InputIterator first, InputIterator last);
 
 
 			/*!此构造函数源来自于一个范围
@@ -247,7 +256,7 @@ namespace thrust {
 			/*!返回指向vector_base最后一个元素后面的一个const迭代器
 			* \return begin()+size()
 			*/
-			const_iterator end(void);
+			const_iterator end(void)const ;
 
 			/*!返回指向vector_base最后一个元素后面的一个const迭代器
 			* \return begin()+size()
@@ -263,12 +272,12 @@ namespace thrust {
 			/*!返回指向反向vector_base序列最后一个元素后面的一个const迭代器
 			* \return begin()+size()
 			*/
-			const_reverse_iterator crend(void);
+			const_reverse_iterator rend(void)const ;
 
 			/*!返回指向反向vector_base序列最后一个元素后面的一个const迭代器
 			* \return begin()+size()
 			*/
-			const_reverse_iterator crend(void);
+			const_reverse_iterator crend(void)const ;
 
 
 			const_reference front(void)const;
@@ -326,11 +335,11 @@ namespace thrust {
 			template<typename IteratorIntegralType>
 			void init_dispatch(IteratorIntegralType begin, IteratorIntegralType value, true_type);
 
-			template<typename InputInterator>
-			void range_init(InputIterator first, InputIterator last);
+			/*template<typename InputInterator>
+			void range_init(InputInterator first, InputInterator last);*/
 
 			template<typename InputInterator>
-			void range_init(InputIterator first, InputIterator last,thrust::incrementable_traversal_tag);
+			void range_init(InputInterator first, InputInterator last,thrust::incrementable_traversal_tag);
 
 			template<typename ForwardIterator>
 			void range_init(ForwardIterator first, ForwardIterator last, thrust::random_access_traversal_tag);
@@ -375,7 +384,7 @@ namespace thrust {
 	}//detail
 
 
-	typename<typename T, typename Alloc>
+	template<typename T, typename Alloc>
 		void swap(detail::vector_base<T, Alloc>& a,
 			detail::vector_base<T, Alloc>& b);
 
