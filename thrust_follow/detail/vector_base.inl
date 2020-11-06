@@ -349,6 +349,275 @@ namespace detail{
 			return result;
 		}//为什么没有end?
 
+		template<typename T, typename Alloc>
+		typename vector_base<T, Alloc>::const_iterator
+			vector_base<T, Alloc>
+			::end(void)const
+		{
+
+			iterator result = begin();
+			thrust::advance(result, size());//
+			return result;
+		}
+
+
+		template<typename T, typename Alloc>
+		typename vector_base<T, Alloc>::const_iterator
+			vector_base<T, Alloc>
+			::cend(void)const
+		{
+			return end();
+		}
+
+
+		template<typename T,typename Alloc>
+		typename vector_base<T,Alloc>::reverse_iterator 
+			vector_base<T,Alloc>
+			::rend(void) {
+			return const_reverse_iterator(begin());
+		}
+		template<typename T, typename Alloc>
+		typename vector_base<T, Alloc>::const_reverse_iterator
+			vector_base<T, Alloc>
+			::rend(void)const {
+			return const_reverse_iterator(begin());
+		}
+
+		template<typename T, typename Alloc>
+		typename vector_base<T, Alloc>::const_reverse_iterator
+			vector_base<T, Alloc>
+			::crend(void)const {
+			return rend();//借用上面的
+		}
+
+		template<typename T,typename Alloc>
+		typename vector_base<T,Alloc>::reference
+			vector_base<T,Alloc>
+			::front(void)
+		{
+			return *begin();
+		}
+
+		template<typename T,typename Alloc>
+		typename vector_base<T,Alloc>::const_reference
+			vector_base<T,Alloc>::
+			back(void)const
+		{
+			const_iterator ptr_to_back = end();
+			--ptr_to_back
+				return *ptr_to_back;
+		}
+
+
+		template<typename T, typename Alloc>
+		typename vector_base<T, Alloc>::reference
+			vector_base<T, Alloc>::
+			back(void)
+		{
+			iterator ptr_to_back = end();
+			--ptr_to_back;
+			return *ptr_to_back;
+		}
+
+		template<typename T, typename Alloc>
+		typename vector_base<T, Alloc>::pointer
+			vector_base<T, Alloc>::
+			data(void)
+		{
+			return pointer(&front());
+		}
+
+
+		template<typename T, typename Alloc>
+		typename vector_base<T, Alloc>::const_pointer
+			vector_base<T, Alloc>::
+			data(void)const
+		{
+			return const_pointer(&front());
+		}
+
+
+		typename<typename T,typename Alloc>
+			vector_base<T,Alloc>
+			::~vector_base(void) {
+			if (!empty())
+				m_storage.destroy(begin(), end());//m_storage是一块原始内存？？
+		}
+
+		template<typename T,typename Alloc>
+		void vector_base<T,Alloc>
+			::clear(void) {
+			erase(begin(), end());
+		}
+
+		template<typename T,typename Alloc>
+		bool vector_base<T,Alloc>
+			::empty(void)const {
+			return size() == 0;
+		}
+
+		template<typename T,typename Alloc>
+		void vector_base<T,Alloc>
+			::push_back(const value_type& x) {
+			insert(end(), x);
+		}
+
+		template<typename T,typename Alloc>
+		void vector_base<T, Alloc>::pop_back(void)
+		{
+			iterator e = end();
+			iterator ptr_to_back = e;
+			--ptr_to_back;
+			m_storage.destroy(ptr_to_back, e);
+			--m_size;
+		}//可不可以简单些
+
+		template<typename T, typename Alloc>
+		typename vector_base<T,Alloc>::iterator 
+			vector_base<T, Alloc>::erase(iterator pos)
+		{
+			iterator end = pos;
+			++end;
+			return erase(pos, end);
+		}//调用删除一个区间的删除
+
+		template<typename T, typename Alloc>
+		typename vector_base<T, Alloc>::iterator
+			vector_base<T,Alloc>::
+			erase(iterator first, iterator last)
+		{
+			//首先last到end()的元素顺次前移到起点为first位置处
+			iterator i = thrust::detail::overlapped_copy(last, end(), first);
+
+			//销毁i后面的一切元素
+			m_storage.destroy(i, end());
+
+			//调整大小
+			m_size -= (last - first);
+
+			//返回指向被删除元素的第一个位置
+			return first;
+		}
+
+
+		template<typename T,typename Alloc>
+		void vector_base<T, Alloc>
+			::swap(vector_base& v) {
+			thrust::swap(m_storage, v.m_storage);
+			thrust::swap(m_size, v.m_size);
+		}
+
+		template<typename T,typename Alloc>
+		void vector_base<T,Alloc>::
+			assign(size_type n, const T& x)
+		{
+			fill_assign(n, x);
+		}
+
+		template<typename T,typename Alloc>
+		template<typename InputIterator>
+		void vector_base<T,Alloc>:: 
+			assign(InputIterator first, InputIterator last) {
+
+			//由于已经有了(n,x)形式的assign
+			//为了消除二义性，对迭代器处理:
+			typedef typename thrust::detail::is_integral<InputIterator> integral;
+			assign_dispatch(first, last, integral());
+		}
+
+		template<typename T,typename Alloc>
+		typename vector_base<T,Alloc>::allocator_type
+			vector_base<T,Alloc>
+			::get_allocator(void)const {
+			return m_storage.get_allocator();
+		}
+
+		template<typename T,typename Alloc>
+		typename vector_base<T,Alloc>::iterator
+			vector_base<T,Alloc>::
+			insert(iterator position, const T& x) {
+			size_type index = thrust::distance(begin(), position);
+			insert(position, 1, x);
+
+			iterator result = begin();
+			thrust::advance(result, index);
+			return result;
+		}
+
+
+		template<typename T,typename Alloc>
+		void vector_base<T,Alloc>
+			::insert(iterator pisition, size_type n, const T& x)
+		{
+			fill_insert(position, n, x);
+		}
+
+		template<typename T,typename Alloc>
+		template<typename InputIterator>
+		void vector_base<T,Alloc>
+			::insert(iterator position, InputIterator first, InputIterator last)
+		{
+			//为了区别与上一个的不同(position,n,x)
+			typedef typename thrust::detail::is_integral<InputIterator> integral;
+			insert_dispatch(position, first, last, integral());
+		}
+
+
+		template<typename T,typename Alloc>
+		template<typename InputIterator>
+		void vector_base<T,Alloc>
+			::assign_dispatch(InputIterator first, InputIterator last, false_type)
+		{
+			range_assign(first, last);
+		}
+
+		template<typename T,typename Alloc>
+		template<typename Integral>
+		void vector_base<T,Alloc>:: 
+			assign_dispatch(Integral n, Integral x, true_type)
+		{
+			fill_assign(n, x);
+		}
+
+		template<typename T,typename Alloc>
+		template<typename InputIterator>
+		void  vector_base<T,Alloc>:: 
+			insert_dispatch(iterator position, InputIterator first, InputIterator last, false_type)
+		{
+			copy_insert(position, first, last);
+
+		}
+
+		template<typename T, typename Alloc>
+		template<typename integral>
+		void  vector_base<T, Alloc>::
+			insert_dispatch(iterator position, integral n, integral x, true_type)
+		{
+			fill_insert(position, first, last);
+
+		}
+
+		template<typename T,typename Alloc>
+		template<typename ForwardIterator>
+		void vector_base<T,Alloc>
+			::copy_insert(iterator position, InputIterator first, InputIterator last)
+		{
+			if (first != last) {
+				//有多少新元素将会被创建
+				const size_type num_new_elements = thrust::distance(first, last);
+				if (capacity() - size() >= num_new_elements) {
+					//表明有充足的空间容纳
+					//有多少现在的元素将会被替代
+
+					const size_type num_displaced_elements = end() - position;
+					iterator old_end = end();
+					if (num_displaced_elements > num_new_elements) {
+						//构造并复制 n个元素
+					}
+				}
+			}
+		}
+
 
 
 
