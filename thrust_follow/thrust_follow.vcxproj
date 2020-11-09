@@ -16,6 +16,8 @@
   <ItemGroup>
     <ClInclude Include="detail\system\detail\sequential\binary_serch.h" />
     <ClInclude Include="detail\vector_base.h" />
+    <ClInclude Include="system\cuda\detail\async\copy.h" />
+    <ClInclude Include="system\detail\sequential\adjacent_difference.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="detail\vector_base.inl" />
