@@ -146,6 +146,34 @@ template<typename DerivedPolicy,
 	return middle;
 }//原文中204行
 
+__thrust_exec_check_disable__
+template<typename DerivedPolicy,
+	typename ForwardItertor,
+	typename InputIterator,
+	typename Predicate>
+	__host__ __device__
+	ForwardIterator stable_partition(sequential::execution_policy<DerivedPolicy>& exec,
+		ForwardIterator first,
+		ForwardIterator last,
+		Predicate pred)
+{
+	//wrap pred 
+	thrust::detail::wrapped_function<predicate, bool>
+		wrapped_pred(pred)；
+		typedef typename thrust::iterator_value<ForwardIterator>::type T;
+	typename thrust::detail::temporary_array<T, DerivedPolicy>TempRange;
+	typedef typename TempRange::iterator TempIterator;
+	TempRange temp(exec, first, last);//???
+	InputIterator stencil_iter = stencil;
+
+	InputIterator stencil_iter = stencil;
+	for (TempIterator iter = temp.begin(); iter != temp.end(); ++iter, ++stencil_iter)
+	{
+
+	}
+
+}
+
 } // end namespace sequential
 } // end namespace detail
 } // end namespace system
